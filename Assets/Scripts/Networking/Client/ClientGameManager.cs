@@ -15,6 +15,7 @@ public class ClientGameManager : IDisposable
     private JoinAllocation allocation;
     private NetworkClient networkClient;
     private const string MenuSceneName = "Menu";
+
     public async Task<bool> InitAsync()
     {
         await UnityServices.InitializeAsync();
@@ -38,7 +39,6 @@ public class ClientGameManager : IDisposable
 
     public async Task StartClientAsync(string joinCode)
     {
-
         try
         {
             allocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
@@ -57,13 +57,18 @@ public class ClientGameManager : IDisposable
         UserData userData = new UserData
         {
             userName = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"),
-            userAuthId = AuthenticationService.Instance.PlayerId
+            userAuthId = AuthenticationService.Instance.PlayerId,
         };
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
 
         NetworkManager.Singleton.StartClient();
+    }
+
+    public void Disconnect()
+    {
+        networkClient.Disconnect();
     }
 
     public void Dispose()

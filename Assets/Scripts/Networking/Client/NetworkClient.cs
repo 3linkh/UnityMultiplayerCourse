@@ -1,10 +1,9 @@
 using System;
 using Unity.Netcode;
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NetworkClient: IDisposable
+public class NetworkClient : IDisposable
 {
     private NetworkManager networkManager;
     private const string MenuSceneName = "Menu";
@@ -18,14 +17,20 @@ public class NetworkClient: IDisposable
 
     private void OnClientDisconnect(ulong clientId)
     {
-        if (clientId != 0 && clientId != networkManager.LocalClientId) return;
+        if (clientId != 0 && clientId != networkManager.LocalClientId)
+            return;
 
+        Disconnect();
+    }
+
+    public void Disconnect()
+    {
         if (SceneManager.GetActiveScene().name != MenuSceneName)
         {
             SceneManager.LoadScene(MenuSceneName);
         }
 
-        if(networkManager.IsClient)
+        if (networkManager.IsClient)
         {
             networkManager.Shutdown();
         }

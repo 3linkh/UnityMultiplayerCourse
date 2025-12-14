@@ -16,6 +16,9 @@ public class TankPlayer : NetworkBehaviour
     [field: SerializeField]
     public CoinWallet wallet { get; private set; }
 
+    [SerializeField]
+    SpriteRenderer minimapIconRenderer;
+
     [Header("Settings")]
     [SerializeField]
     int ownerPriority = 15;
@@ -25,6 +28,17 @@ public class TankPlayer : NetworkBehaviour
 
     public static event Action<TankPlayer> OnPlayerSpawned;
     public static event Action<TankPlayer> OnPlayerDespawned;
+
+    [SerializeField]
+    Color ownerColor;
+
+    private void Start()
+    {
+        if (IsOwner)
+        {
+            minimapIconRenderer.color = ownerColor;
+        }
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -43,6 +57,7 @@ public class TankPlayer : NetworkBehaviour
         if (IsOwner)
         {
             virtualCamera.Priority = ownerPriority;
+            minimapIconRenderer.color = ownerColor;
         }
     }
 
